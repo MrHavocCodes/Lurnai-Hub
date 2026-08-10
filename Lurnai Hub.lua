@@ -1,28 +1,28 @@
 --!strict
 
 type GameMap = {[number]: string}
+
 type VersionData = {
-LoaderVersion: string,
-Games: {[number]: string}
+	LoaderVersion: string,
+	Games: {[number]: string}
 }
 
 local HttpGet = game.HttpGet
-local GameId = game.GameId
+local PlaceId = game.PlaceId
 
-local games = "https://raw.githubusercontent.com/LurnaiHub/Lurnai-Hub/refs/heads/main/GameList.lua"
-local versions = "https://raw.githubusercontent.com/LurnaiHub/Lurnai-Hub/refs/heads/main/Version.lua"
+local gamesUrl: string = "https://raw.githubusercontent.com/LurnaiHub/Lurnai-Hub/refs/heads/main/GameList.lua"
+local versionsUrl: string = "https://raw.githubusercontent.com/LurnaiHub/Lurnai-Hub/refs/heads/main/Version.lua"
 
-local Games = loadstring(
-HttpGet(game, games)
+local Games: GameMap = loadstring(
+	HttpGet(game, gamesUrl)
 )() :: GameMap
 
-local Versions = loadstring(
-HttpGet(game, versions)
+local Versions: VersionData = loadstring(
+	HttpGet(game, versionsUrl)
 )() :: VersionData
 
-local URL = assert(Games[GameId], "Unsupported game.")
+local URL: string = assert(Games[PlaceId], "Unsupported game.")
+assert(Versions.Games[PlaceId], "Unsupported game version.")
 
-local _ = Versions.Games[GameId]
-
-local Chunk = assert(loadstring(HttpGet(game, URL)))
+local Chunk: () -> () = assert(loadstring(HttpGet(game, URL)))
 Chunk()
